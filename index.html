@@ -126,13 +126,14 @@
                 });
         });
 
-        const parametroURL = window.location.search;
-        const parametro = parametroURL.substring(1);
+        // Obtener parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const parametro = urlParams.get('parametro');
 
         const parametroElement = document.getElementById('parametro');
-        parametroElement.textContent = parametro;
+        parametroElement.textContent = parametro ? parametro : 'No se proporcionó ningún parámetro';
 
-        if (parametro.includes('/lunes')) {
+        if (parametro && parametro.includes('lunes')) {
             parametroElement.textContent = 'lunes';
         }
     </script>
