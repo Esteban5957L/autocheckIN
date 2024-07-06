@@ -173,7 +173,13 @@
                 guests.push({ nombre, apellido, dni, correo });
             });
 
+
+            const reservationNumber = new URLSearchParams(window.location.search).get('ReservationNumber');
+            const hotelID = new URLSearchParams(window.location.search).get('hotelID');
+
             const datos = {
+                hotelID,
+                reservationNumber,
                 arrivalTime,
                 departureTime,
                 email,
@@ -181,10 +187,11 @@
                 firstName,
                 idNumber,
                 comments,
-                guests
+                guests,
+
             };
 
-            fetch('https://tu-url-de-destino', {
+            fetch('https://hook.us1.make.com/inv0l7yt2pmnbd31xtsdkbekjkpyv2q2', {
                 method: 'POST',
                 body: JSON.stringify(datos),
                 headers: {
@@ -204,11 +211,11 @@
 
         // Obtener parámetros de la URL
         const urlParams = new URLSearchParams(window.location.search);
-        const huespedes = parseInt(urlParams.get('huespedes'), 10);
+        const guests = parseInt(urlParams.get('guest'), 10);
 
         const guestInfoContainer = document.getElementById('guest-info-container');
-        if (!isNaN(huespedes) && huespedes > 0) {
-            for (let i = 0; i < huespedes; i++) {
+        if (!isNaN(guests) && guests > 0) {
+            for (let i = 0; i < guests; i++) {
                 const guestDiv = document.createElement('div');
                 guestDiv.classList.add('guest-info');
                 guestDiv.innerHTML = `
