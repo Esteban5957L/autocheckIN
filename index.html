@@ -201,12 +201,11 @@
             })
                 .then(response => {
                     if (response.status === 200) {
-                        return response.json().then(data => {
-                            console.log('Datos enviados correctamente:', data);
-                            alert('Datos enviados correctamente!');
-                        });
-                    } else {
-                        alert('Solicitud aceptada, pero hubo un problema con la respuesta.');
+                        console.log('Datos enviados correctamente');
+                        alert('Datos enviados correctamente!');
+                    }
+                    else {
+                        alert('Hubo un problema con la respuesta del servidor.');
                     }
                 })
                 .catch(error => {
