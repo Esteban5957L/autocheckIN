@@ -215,27 +215,27 @@
 
         const guestInfoContainer = document.getElementById('guest-info-container');
         if (!isNaN(guests) && guests > 0) {
-            for (let i = 0; i < guests; i++) {
+            for (let i = 1; i < guests; i++) {
                 const guestDiv = document.createElement('div');
                 guestDiv.classList.add('guest-info');
                 guestDiv.innerHTML = `
                     <div class="form-group">
-                        <label>Nombre del Huésped ${i + 1}:</label>
+                        <label>Nombre del Huésped ${i}:</label>
                         <input type="text" class="nombre" required>
                     </div>
                     
                     <div class="form-group">
-                        <label>Apellido del Huésped ${i + 1}:</label>
+                        <label>Apellido del Huésped ${i}:</label>
                         <input type="text" class="apellido" required>
                     </div>
 
                     <div class="form-group">
-                        <label>DNI del Huésped ${i + 1}:</label>
+                        <label>DNI del Huésped ${i}:</label>
                         <input type="number" class="dni" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Correo del Huésped ${i + 1}:</label>
+                        <label>Correo del Huésped ${i}:</label>
                         <input type="email" class="correo" required>
                     </div>
                 `;
