@@ -28,6 +28,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-y: auto;
+            max-height: 100vh;
         }
 
         h1 {
@@ -141,6 +143,7 @@
                 <input type="text" id="comments" name="comments" required>
             </div>
 
+            <h2>Acompañantes de la reserva</h2>
             <div id="guest-info-container"></div>
 
             <button type="submit">Enviar</button>
@@ -173,7 +176,6 @@
                 guests.push({ nombre, apellido, dni, correo });
             });
 
-
             const reservationNumber = new URLSearchParams(window.location.search).get('ReservationNumber');
             const hotelID = new URLSearchParams(window.location.search).get('hotelID');
 
@@ -188,7 +190,6 @@
                 idNumber,
                 comments,
                 guests,
-
             };
 
             fetch('https://hook.us1.make.com/inv0l7yt2pmnbd31xtsdkbekjkpyv2q2', {
@@ -220,22 +221,22 @@
                 guestDiv.classList.add('guest-info');
                 guestDiv.innerHTML = `
                     <div class="form-group">
-                        <label>Nombre del Huésped ${i}:</label>
+                        <label>Nombre del Acompañante ${i}:</label>
                         <input type="text" class="nombre" required>
                     </div>
                     
                     <div class="form-group">
-                        <label>Apellido del Huésped ${i}:</label>
+                        <label>Apellido del Acompañante ${i}:</label>
                         <input type="text" class="apellido" required>
                     </div>
 
                     <div class="form-group">
-                        <label>DNI del Huésped ${i}:</label>
+                        <label>DNI del Acompañante ${i}:</label>
                         <input type="number" class="dni" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Correo del Huésped ${i}:</label>
+                        <label>Correo del Acompañante ${i}:</label>
                         <input type="email" class="correo" required>
                     </div>
                 `;
