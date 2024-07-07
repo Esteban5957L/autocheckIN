@@ -199,10 +199,15 @@
                     'Content-Type': 'application/json'
                 }
             })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Datos enviados correctamente:', data);
-                    alert('Datos enviados correctamente!');
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json().then(data => {
+                            console.log('Datos enviados correctamente:', data);
+                            alert('Datos enviados correctamente!');
+                        });
+                    } else {
+                        alert('Solicitud aceptada, pero hubo un problema con la respuesta.');
+                    }
                 })
                 .catch(error => {
                     console.error('Error al enviar datos:', error);
