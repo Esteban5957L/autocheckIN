@@ -247,6 +247,7 @@
         }
 
         if (!isNaN(guests) && guests > 0) {
+            if (guests == 1) document.getElementById('guest-title').style.display = 'none';
             addGuestFields(guests - 1);
             document.getElementById('numGuestsContainer').style.display = 'none';
         } else {
