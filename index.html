@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario con Fetch</title>
+    <title>Formulario de check-in</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -32,7 +32,8 @@
             max-height: 100vh;
         }
 
-        h1 {
+        h1,
+        h2 {
             text-align: center;
             color: #4CAF50;
         }
@@ -55,11 +56,11 @@
             color: #4CAF50;
         }
 
-        input[type="text"],
-        input[type="number"],
         input[type="time"],
         input[type="email"],
-        input[type="tel"] {
+        input[type="tel"],
+        input[type="number"],
+        input[type="text"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -105,32 +106,13 @@
 
 <body>
     <div class="container">
-        <h1>Formulario de envío de datos</h1>
-
+        <h1>Formulario de check-in</h1>
+        <h2 id="guest-info">Nombre Apellido - Reserva #123456</h2>
         <form id="formulario">
-            <div class="form-group">
-                <label for="arrivalTime">Hora de Llegada:</label>
-                <input type="time" id="arrivalTime" name="arrivalTime" required>
-            </div>
 
-            <div class="form-group">
-                <label for="departureTime">Hora de Salida:</label>
-                <input type="time" id="departureTime" name="departureTime" required>
-            </div>
-
-            <div class="form-group">
-                <label for="email">Correo Electrónico:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-
-            <div class="form-group">
-                <label for="phone">Teléfono:</label>
-                <input type="tel" id="phone" name="phone" required>
-            </div>
-
-            <div class="form-group">
-                <label for="firstName">Nombre:</label>
-                <input type="text" id="firstName" name="firstName" required>
+            <div class="form-group" id="reservationNumberContainer">
+                <label for="reservationNumber">Número de Reserva:</label>
+                <input type="number" id="reservationNumber" name="reservationNumber" required>
             </div>
 
             <div class="form-group">
@@ -139,12 +121,34 @@
             </div>
 
             <div class="form-group">
+                <label for="phone">Teléfono:</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Correo Electrónico:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="arrivalTime">Hora de Llegada:</label>
+                <input type="time" id="arrivalTime" name="arrivalTime" required>
+            </div>
+
+            <div class="form-group">
                 <label for="comments">Comentarios:</label>
                 <input type="text" id="comments" name="comments" required>
             </div>
 
-            <h2>Acompañantes de la reserva</h2>
-            <div id="guest-info-container"></div>
+            <div class="form-group" id="numGuestsContainer">
+                <label for="numGuests">Número de Acompañantes:</label>
+                <input type="number" id="numGuests" name="numGuests" min="0" required>
+            </div>
+
+            <div id="guest-container">
+                <h2 id="guest-title">Datos de los acompañantes de la reserva</h2>
+                <div id="guest-info-container"></div>
+            </div>
 
             <button type="submit">Enviar</button>
         </form>
@@ -153,44 +157,23 @@
     </div>
 
     <script>
-        const formulario = document.getElementById('formulario');
-
-        formulario.addEventListener('submit', (event) => {
+        document.getElementById('formulario').addEventListener('submit', (event) => {
             event.preventDefault();
-
-            const arrivalTime = document.getElementById('arrivalTime').value;
-            const departureTime = document.getElementById('departureTime').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const firstName = document.getElementById('firstName').value;
-            const idNumber = document.getElementById('idNumber').value;
-            const comments = document.getElementById('comments').value;
-
-            const guests = [];
-            const guestContainers = document.querySelectorAll('.guest-info');
-            guestContainers.forEach(container => {
-                const nombre = container.querySelector('.nombre').value;
-                const apellido = container.querySelector('.apellido').value;
-                const dni = container.querySelector('.dni').value;
-                const correo = container.querySelector('.correo').value;
-                guests.push({ nombre, apellido, dni, correo });
+            const formData = new FormData(event.target);
+            const guests = Array.from(document.querySelectorAll('.guest-info')).map(container => {
+                return {
+                    nombre: container.querySelector('.nombre').value,
+                    apellido: container.querySelector('.apellido').value,
+                    dni: container.querySelector('.dni').value,
+                    correo: container.querySelector('.correo').value,
+                    phoneGuest: container.querySelector('.phoneGuest').value
+                };
             });
 
-            const reservationNumber = new URLSearchParams(window.location.search).get('ReservationNumber');
-            const hotelID = new URLSearchParams(window.location.search).get('hotelID');
-
-            const datos = {
-                hotelID,
-                reservationNumber,
-                arrivalTime,
-                departureTime,
-                email,
-                phone,
-                firstName,
-                idNumber,
-                comments,
-                guests,
-            };
+            const datos = Object.fromEntries(formData.entries());
+            datos.guests = guests;
+            datos.hotelID = new URLSearchParams(window.location.search).get('hotelID');
+            datos.status = new URLSearchParams(window.location.search).get('status');
 
             fetch('https://hook.us1.make.com/inv0l7yt2pmnbd31xtsdkbekjkpyv2q2', {
                 method: 'POST',
@@ -201,10 +184,9 @@
             })
                 .then(response => {
                     if (response.status === 200) {
-                        console.log('Datos enviados correctamente');
                         alert('Datos enviados correctamente!');
-                    }
-                    else {
+                        window.location.href = 'https://minihotel.io/es/'; // Reemplaza 'URL_A_REDIRECCIONAR' con la URL a la que quieres redirigir
+                    } else {
                         alert('Hubo un problema con la respuesta del servidor.');
                     }
                 })
@@ -214,38 +196,63 @@
                 });
         });
 
-        // Obtener parámetros de la URL
         const urlParams = new URLSearchParams(window.location.search);
+        const guestName = urlParams.get('guestName');
+        const guestSurname = urlParams.get('guestSurname');
+        const reservationNumber = urlParams.get('reservationNumber');
         const guests = parseInt(urlParams.get('guest'), 10);
 
-        const guestInfoContainer = document.getElementById('guest-info-container');
-        if (!isNaN(guests) && guests > 0) {
-            for (let i = 1; i < guests; i++) {
-                const guestDiv = document.createElement('div');
-                guestDiv.classList.add('guest-info');
-                guestDiv.innerHTML = `
+        if (guestName && guestSurname && reservationNumber) {
+            document.getElementById('guest-info').innerText = `${guestName} ${guestSurname} - Reserva #${reservationNumber}`;
+            document.getElementById('reservationNumberContainer').style.display = 'none';
+        } else {
+            document.getElementById('guest-info').style.display = 'none';
+        }
+
+        function addGuestFields(num) {
+            if (num > 0) {
+                const guestInfoContainer = document.getElementById('guest-info-container');
+                document.getElementById('guest-title').style.display = 'block';
+                guestInfoContainer.innerHTML = '';
+                for (let i = 1; i <= num; i++) {
+                    const guestDiv = document.createElement('div');
+                    guestDiv.classList.add('guest-info');
+                    guestDiv.innerHTML = `
                     <div class="form-group">
                         <label>Nombre del Acompañante ${i}:</label>
                         <input type="text" class="nombre" required>
                     </div>
-                    
                     <div class="form-group">
                         <label>Apellido del Acompañante ${i}:</label>
                         <input type="text" class="apellido" required>
                     </div>
-
                     <div class="form-group">
                         <label>DNI del Acompañante ${i}:</label>
                         <input type="number" class="dni" required>
                     </div>
-
+                    <div class="form-group">
+                        <label>Teléfono del Acompañante ${i}:</label>
+                        <input type="number" class="phoneGuest" required>
+                    </div>
                     <div class="form-group">
                         <label>Correo del Acompañante ${i}:</label>
                         <input type="email" class="correo" required>
                     </div>
                 `;
-                guestInfoContainer.appendChild(guestDiv);
+                    guestInfoContainer.appendChild(guestDiv);
+                }
             }
+
+        }
+
+        if (!isNaN(guests) && guests > 0) {
+            addGuestFields(guests - 1);
+            document.getElementById('numGuestsContainer').style.display = 'none';
+        } else {
+            document.getElementById('guest-title').style.display = 'none';
+            document.getElementById('numGuests').addEventListener('change', (event) => {
+                addGuestFields(parseInt(event.target.value, 10));
+            });
         }
     </script>
 </body>
