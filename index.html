@@ -205,7 +205,7 @@
 
         if (reservationNumber) {
             document.getElementById('reservationNumberContainer').style.display = 'none';
-            if(guestName & guestSurname){
+            if(guestName && guestSurname){
             document.getElementById('guest-info').innerText = `${guestName} ${guestSurname} - Reserva #${reservationNumber}`;
             }else{
             document.getElementById('guest-info').innerText = `Reserva #${reservationNumber}`;
