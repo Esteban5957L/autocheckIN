@@ -203,9 +203,13 @@
         const reservationNumber = urlParams.get('reservationNumber');
         const guests = parseInt(urlParams.get('guest'), 10);
 
-        if (guestName && guestSurname && reservationNumber) {
-            document.getElementById('guest-info').innerText = `${guestName} ${guestSurname} - Reserva #${reservationNumber}`;
+        if (reservationNumber) {
             document.getElementById('reservationNumberContainer').style.display = 'none';
+            if(guestName & guestSurname){
+            document.getElementById('guest-info').innerText = `${guestName} ${guestSurname} - Reserva #${reservationNumber}`;
+            }else{
+            document.getElementById('guest-info').innerText = `Reserva #${reservationNumber}`;
+            }   
         } else {
             document.getElementById('guest-info').style.display = 'none';
         }
